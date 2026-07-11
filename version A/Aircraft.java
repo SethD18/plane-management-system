@@ -21,4 +21,15 @@ public class Aircraft {
     public int getEconomySeats() { return economySeats; }
     public int getBusinessSeats() { return businessSeats; }
     public int getFirstClassSeats() { return firstClassSeats; }
+    public int getTotalSeats() { return economySeats + businessSeats + firstClassSeats; }
+
+    // method to print the details of an aircraft
+    public void displayAircraft() {
+        System.out.println("Aircraft ID: " + id +
+                " | Model: " + model +
+                " | Economy Seats: " + economySeats +
+                " | Business Seats: " + businessSeats +
+                " | First Class Seats: " + firstClassSeats +
+                " | Total Seats: " + getTotalSeats());
+    }
 }

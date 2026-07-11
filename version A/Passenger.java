@@ -21,4 +21,13 @@ public class Passenger {
     public String getPassportNumber() { return passportNumber; }
     public String getEmail() { return email; }
     public String getPhone() { return phone; }
+
+    // method to print the details of a passenger
+    public void displayPassenger() {
+        System.out.println("Passenger ID: " + id +
+                " | Name: " + name +
+                " | Passport: " + passportNumber +
+                " | Email: " + email +
+                " | Phone: " + phone);
+    }
 }
