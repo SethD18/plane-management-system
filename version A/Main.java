@@ -4,9 +4,9 @@ import java.util.Scanner;
 public class Main {
 
     static Aircraft[] aircrafts = new Aircraft[50];
-    static Passenger[] passengers = new Passenger[200];
+    static Passenger[] passengers = new Passenger[100];
     static Flight[] flights = new Flight[100];
-    static Booking[] bookings = new Booking[250];
+    static Booking[] bookings = new Booking[200];
 
     static int aircraftCount = 0;
     static int passengerCount = 0;
@@ -28,8 +28,14 @@ public class Main {
         int choice;
         do {
             printMenu();
-            choice = scanner.nextInt();
-            scanner.nextLine(); 
+            try {
+                String input = scanner.nextLine();
+                choice = Integer.parseInt(input);
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a valid menu number.");
+                choice = -1;
+                continue;
+            }
 
             switch (choice) {
                 case 1:  addAircraft();         break;
@@ -95,19 +101,23 @@ public class Main {
             System.out.println("Error: Aircraft storage is full.");
             return;
         }
-        System.out.print("Model name: ");
-        String model = scanner.nextLine();
-        System.out.print("Economy seats: ");
-        int economy = scanner.nextInt();
-        System.out.print("Business seats: ");
-        int business = scanner.nextInt();
-        System.out.print("First class seats: ");
-        int first = scanner.nextInt();
-        scanner.nextLine();
-        Aircraft a = new Aircraft(aircraftIdCounter++, model, economy, business, first);
-        aircrafts[aircraftCount++] = a;
-        System.out.print("Added aircraft: ");
-        a.displayAircraft();
+        try {
+            System.out.print("Model name: ");
+            String model = scanner.nextLine();
+            System.out.print("Economy seats: ");
+            int economy = Integer.parseInt(scanner.nextLine());
+            System.out.print("Business seats: ");
+            int business = Integer.parseInt(scanner.nextLine());
+            System.out.print("First class seats: ");
+            int first = Integer.parseInt(scanner.nextLine());
+
+            Aircraft a = new Aircraft(aircraftIdCounter++, model, economy, business, first);
+            aircrafts[aircraftCount++] = a;
+            System.out.print("Added aircraft: ");
+            a.displayAircraft();
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input. Please enter valid numbers. Returning to menu.");
+        }
     }
 
     // Prints aircraft details
@@ -132,38 +142,42 @@ public class Main {
             System.out.println("No aircraft available.");
             return;
         }
-        System.out.print("Flight number: ");
-        String flightNumber = scanner.nextLine();
-        System.out.print("Origin: ");
-        String origin = scanner.nextLine();
-        System.out.print("Destination: ");
-        String destination = scanner.nextLine();
+        try {
+            System.out.print("Flight number: ");
+            String flightNumber = scanner.nextLine();
+            System.out.print("Origin: ");
+            String origin = scanner.nextLine();
+            System.out.print("Destination: ");
+            String destination = scanner.nextLine();
 
-        System.out.print("Departure (yyyy-MM-dd HH:mm): ");
-        String departure = scanner.nextLine();
-        System.out.print("Arrival   (yyyy-MM-dd HH:mm): ");
-        String arrival = scanner.nextLine();
+            System.out.print("Departure (yyyy-MM-dd HH:mm): ");
+            String departure = scanner.nextLine();
+            System.out.print("Arrival   (yyyy-MM-dd HH:mm): ");
+            String arrival = scanner.nextLine();
 
-        viewAllAircraft();
-        System.out.print("Aircraft ID: ");
-        int aircraftId = scanner.nextInt();
-        scanner.nextLine();
+            viewAllAircraft();
+            System.out.print("Aircraft ID: ");
+            int aircraftId = Integer.parseInt(scanner.nextLine());
 
-        Aircraft selected = null;
-        for (int i = 0; i < aircraftCount; i++) {
-            if (aircrafts[i].getId() == aircraftId) {
-                selected = aircrafts[i];
-                break;
+            Aircraft selected = null;
+            for (int i = 0; i < aircraftCount; i++) {
+                if (aircrafts[i].getId() == aircraftId) {
+                    selected = aircrafts[i];
+                    break;
+                }
             }
-        }
-        if (selected == null) {
-            System.out.println("Aircraft not found.");
-            return;
-        }
+            if (selected == null) {
+                System.out.println("Aircraft not found.");
+                return;
+            }
 
-        Flight flight = new Flight(flightIdCounter++, flightNumber, origin, destination, departure, arrival, selected);
-        flights[flightCount++] = flight;
-        System.out.println("Successfully added flight!");
+            Flight flight = new Flight(flightIdCounter++, flightNumber, origin, destination, departure, arrival, selected);
+            flights[flightCount++] = flight;
+            System.out.println("Successfully added flight!");
+            flight.displayFlight();
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input. Please enter a valid number. Returning to menu.");
+        }
     }
 
     // Prints all the flights
@@ -186,10 +200,15 @@ public class Main {
         String destination = scanner.nextLine();
 
         System.out.println("\n--- Results ---");
+        boolean found = false;
         for (int i = 0; i < flightCount; i++) {
             if (flights[i].getOrigin().equalsIgnoreCase(origin) && flights[i].getDestination().equalsIgnoreCase(destination)) {
                 flights[i].displayFlight();
+                found = true;
             }
+        }
+        if (!found) {
+            System.out.println("No matching flights found.");
         }
     }
 
@@ -220,109 +239,146 @@ public class Main {
             return;
         }
 
-        viewAllFlights();
-        System.out.print("Flight ID: ");
-        int flightId = scanner.nextInt();
-        scanner.nextLine();
-        Flight flight = findFlight(flightId);
-        if (flight == null) {
-            System.out.println("Flight not found.");
-            return;
-        }
+        try {
+            viewAllFlights();
+            System.out.print("Flight ID: ");
+            int flightId = Integer.parseInt(scanner.nextLine());
+            Flight flight = findFlight(flightId);
+            if (flight == null) {
+                System.out.println("Flight not found.");
+                return;
+            }
 
-        System.out.println("\n--- Passengers ---");
-        for (int i = 0; i < passengerCount; i++) {
-            passengers[i].displayPassenger();
-        }
-        System.out.print("Passenger ID: ");
-        int passengerId = scanner.nextInt();
-        scanner.nextLine();
-        Passenger passenger = findPassenger(passengerId);
-        if (passenger == null) {
-            System.out.println("Passenger not found.");
-            return;
-        }
+            System.out.println("\n--- Passengers ---");
+            for (int i = 0; i < passengerCount; i++) {
+                passengers[i].displayPassenger();
+            }
+            System.out.print("Passenger ID: ");
+            int passengerId = Integer.parseInt(scanner.nextLine());
+            Passenger passenger = findPassenger(passengerId);
+            if (passenger == null) {
+                System.out.println("Passenger not found.");
+                return;
+            }
 
-        System.out.println("1. ECONOMY\n2. BUSINESS\n3. FIRST");
-        System.out.print("Choice: ");
-        int classChoice = scanner.nextInt();
-        scanner.nextLine();
+            // Prevent duplicate bookings
+            for (int i = 0; i < bookingCount; i++) {
+                if (bookings[i].getFlight().getId() == flightId &&
+                        bookings[i].getPassenger().getId() == passengerId &&
+                        !bookings[i].getStatus().equals("CANCELLED")) {
+                    System.out.println("Error: Passenger already has an active booking on this flight.");
+                    return;
+                }
+            }
+            System.out.println("1. ECONOMY\n2. BUSINESS\n3. FIRST");
+            System.out.print("Choice: ");
+            int classChoice = Integer.parseInt(scanner.nextLine());
+            if (classChoice < 1 || classChoice > 3) {
+                System.out.println("Invalid choice. Returning to menu.");
+                return;
+            }
 
-        String seatClass;
-        if (classChoice == 1) {
-            seatClass = "ECONOMY";
-        } else if (classChoice == 2) {
-            seatClass = "BUSINESS";
-        } else {
-            seatClass = "FIRST";
+            String seatClass;
+            if (classChoice == 1) {
+                seatClass = "ECONOMY";
+            } else if (classChoice == 2) {
+                seatClass = "BUSINESS";
+            } else {
+                seatClass = "FIRST";
+            }
+
+            if (flight.getAvailableSeats(seatClass) <= 0) {
+                System.out.println("Error: No available seats in " + seatClass + ".");
+                return;
+            }
+            String seatNumber = flight.reserveNextSeat(seatClass);
+            if (seatNumber == null) {
+                System.out.println("No seats available in that class.");
+                return;
+            }
+
+            Booking booking = new Booking(bookingIdCounter++, flight, passenger, seatClass, seatNumber, "2026-07-08");
+            flight.addBooking(booking);
+            bookings[bookingCount++] = booking;
+            System.out.println("Successfully Booked! Seat Number: " + seatNumber);
+            booking.displayBooking();
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input. Please enter a valid number. Returning to menu.");
         }
-
-        String seatNumber = flight.reserveNextSeat(seatClass);
-        if (seatNumber == null) {
-            System.out.println("No seats available in that class.");
-            return;
-        }
-
-        Booking booking = new Booking(bookingIdCounter++, flight, passenger, seatClass, seatNumber, "2026-07-08");
-        flight.addBooking(booking);
-        bookings[bookingCount++] = booking;
-        System.out.println("Successfully Booked! Seat Number: " + seatNumber);
     }
 
     // Cancel a booking
     static void cancelBooking() {
         viewFlightBookings();
-        System.out.print("Booking ID to cancel: ");
-        int id = scanner.nextInt();
-        scanner.nextLine();
-        Booking b = findBooking(id);
-        if (b != null) {
-            b.setStatus("CANCELLED");
-            b.getFlight().freeSeat(b.getSeatClass(), b.getSeatNumber());
-            System.out.println("Cancelled booking ID " + id);
+        try {
+            System.out.print("Booking ID to cancel: ");
+            int id = Integer.parseInt(scanner.nextLine());
+            Booking b = findBooking(id);
+            if (b != null) {
+                b.setStatus("CANCELLED");
+                b.getFlight().freeSeat(b.getSeatClass(), b.getSeatNumber());
+                System.out.println("Cancelled booking ID " + id);
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input. Please enter a valid number. Returning to menu.");
         }
+
     }
 
     // Check-in a passenger and update status
     static void checkInPassenger() {
         viewFlightBookings();
-        System.out.print("Booking ID for Check-In: ");
-        int id = scanner.nextInt();
-        scanner.nextLine();
-        Booking b = findBooking(id);
-        if (b != null) {
-            b.setStatus("CHECKED_IN");
-            System.out.println("Checked in booking ID " + id);
+        try {
+            System.out.print("Booking ID for Check-In: ");
+            int id = Integer.parseInt(scanner.nextLine());
+            Booking b = findBooking(id);
+            if (b != null) {
+                b.setStatus("CHECKED_IN");
+                System.out.println("Checked in booking ID " + id);
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input. Please enter a valid number. Returning to menu.");
         }
     }
 
     // Shows all the bookings in a specific flight
     static void viewFlightBookings() {
         viewAllFlights();
-        System.out.print("Flight ID: ");
-        int id = scanner.nextInt();
-        scanner.nextLine();
-        Flight f = findFlight(id);
-        if (f != null) {
-            Booking[] flightBookings = f.getBookings();
-            for (int i = 0; i < f.getBookingCount(); i++) {
-                flightBookings[i].displayBooking();
+        try {
+            System.out.print("Flight ID: ");
+            int id = Integer.parseInt(scanner.nextLine());
+            Flight f = findFlight(id);
+            if (f != null) {
+                boolean found = false;
+                Booking[] flightBookings = f.getBookings();
+                for (int i = 0; i < f.getBookingCount(); i++) {
+                    flightBookings[i].displayBooking();
+                    found = true;
+                }
+                if (!found) {
+                    System.out.println("No bookings registered for this flight.");
+                }
             }
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input. Please enter a valid number. Returning to menu.");
         }
     }
 
     // Updates the flight status "SCHEDULED/BOARDING/DEPARTED/ARRIVED/CANCELLED"
     static void updateFlightStatus() {
         viewAllFlights();
-        System.out.print("Flight ID: ");
-        int id = scanner.nextInt();
-        scanner.nextLine();
-        Flight f = findFlight(id);
-        if (f != null) {
-            System.out.print("New status (SCHEDULED/BOARDING/DEPARTED/ARRIVED/CANCELLED): ");
-            String status = scanner.nextLine();
-            f.setStatus(status);
-            System.out.println("Updated flight status.");
+        try {
+            System.out.print("Flight ID: ");
+            int id = Integer.parseInt(scanner.nextLine());
+            Flight f = findFlight(id);
+            if (f != null) {
+                System.out.print("New status (SCHEDULED/BOARDING/DEPARTED/ARRIVED/CANCELLED): ");
+                String status = scanner.nextLine();
+                f.setStatus(status);
+                System.out.println("Updated flight status.");
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input. Please enter a valid number. Returning to menu.");
         }
     }
 

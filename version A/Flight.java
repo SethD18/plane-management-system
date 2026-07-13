@@ -1,12 +1,12 @@
 // Flight class holding details of flights
 public class Flight {
-    private int id;
-    private String flightNumber;
-    private String origin;
-    private String destination;
-    private String departureTime;
-    private String arrivalTime;
-    private Aircraft aircraft;
+    private final int id;
+    private final String flightNumber;
+    private final String origin;
+    private final String destination;
+    private final String departureTime;
+    private final String arrivalTime;
+    private final Aircraft aircraft;
     private String status; // "SCHEDULED", "BOARDING", "DEPARTED", "ARRIVED", "CANCELLED"
 
     // Track bookings
@@ -85,13 +85,17 @@ public class Flight {
 
     // Frees seat when a reservation is cancelled
     public void freeSeat(String seatClass, String seatNumber) {
-        int seatIndex = Integer.parseInt(seatNumber.substring(1)) - 1;
-        if (seatClass.equalsIgnoreCase("ECONOMY") && seatIndex >= 0 && seatIndex < economySeatsTaken.length) {
-            economySeatsTaken[seatIndex] = false;
-        } else if (seatClass.equalsIgnoreCase("BUSINESS") && seatIndex >= 0 && seatIndex < businessSeatsTaken.length) {
-            businessSeatsTaken[seatIndex] = false;
-        } else if (seatClass.equalsIgnoreCase("FIRST") && seatIndex >= 0 && seatIndex < firstClassSeatsTaken.length) {
-            firstClassSeatsTaken[seatIndex] = false;
+        try {
+            int seatIndex = Integer.parseInt(seatNumber.substring(1)) - 1;
+            if (seatClass.equalsIgnoreCase("ECONOMY") && seatIndex >= 0 && seatIndex < economySeatsTaken.length) {
+                economySeatsTaken[seatIndex] = false;
+            } else if (seatClass.equalsIgnoreCase("BUSINESS") && seatIndex >= 0 && seatIndex < businessSeatsTaken.length) {
+                businessSeatsTaken[seatIndex] = false;
+            } else if (seatClass.equalsIgnoreCase("FIRST") && seatIndex >= 0 && seatIndex < firstClassSeatsTaken.length) {
+                firstClassSeatsTaken[seatIndex] = false;
+            }
+        } catch (Exception e) {
+            System.out.println("something went wrong");
         }
 
     }

@@ -1,10 +1,10 @@
 // Aircraft Class holding details of planes
 public class Aircraft {
-    private int id;
-    private String model;
-    private int economySeats;
-    private int businessSeats;
-    private int firstClassSeats;
+    private final int id;
+    private final String model;
+    private final int economySeats;
+    private final int businessSeats;
+    private final int firstClassSeats;
 
     // constructor
     public Aircraft(int id, String model, int economySeats, int businessSeats, int firstClassSeats) {

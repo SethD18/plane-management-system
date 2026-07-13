@@ -1,12 +1,12 @@
 // Booking Class representing ticket reservations
 public class Booking {
-    private int id;
-    private Flight flight;
-    private Passenger passenger;
-    private String seatClass; // "ECONOMY", "BUSINESS", "FIRST CLASS"
-    private String seatNumber;
+    private final int id;
+    private final Flight flight;
+    private final Passenger passenger;
+    private final String seatClass; // "ECONOMY", "BUSINESS", "FIRST CLASS"
+    private final String seatNumber;
     private String status; // "CONFIRMED", "CANCELLED", "CHECKED_IN"
-    private String bookingDate;
+    private final String bookingDate;
 
     // constructor
     public Booking(int id, Flight flight, Passenger passenger, String seatClass, String seatNumber, String bookingDate) {

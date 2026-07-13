@@ -1,10 +1,10 @@
 // Passenger Class holding passengers details
 public class Passenger {
-    private int id;
-    private String name;
-    private String passportNumber;
-    private String email;
-    private String phone;
+    private final int id;
+    private final String name;
+    private final String passportNumber;
+    private final String email;
+    private final String phone;
 
     // constructor
     public Passenger(int id, String name, String passportNumber, String email, String phone) {
