@@ -13,8 +13,6 @@ public class Main {
     static int flightCount = 0;
     static int bookingCount = 0;
 
-
-
     // Auto-increment counters for IDs
     static int aircraftIdCounter = 1;
     static int passengerIdCounter = 1;
@@ -214,9 +212,142 @@ public class Main {
         System.out.print("Added passenger: ");
         p.displayPassenger();
     }
-    static void bookSeat() {}
-    static void cancelBooking() {}
-    static void checkInPassenger() {}
-    static void viewFlightBookings() {}
-    static void updateFlightStatus() {}
+
+    // Booking a seat in a flight for a passenger
+    static void bookSeat() {
+        if (bookingCount >= bookings.length) {
+            System.out.println("Error: Booking storage is full.");
+            return;
+        }
+
+        viewAllFlights();
+        System.out.print("Flight ID: ");
+        int flightId = scanner.nextInt();
+        scanner.nextLine();
+        Flight flight = findFlight(flightId);
+        if (flight == null) {
+            System.out.println("Flight not found.");
+            return;
+        }
+
+        System.out.println("\n--- Passengers ---");
+        for (int i = 0; i < passengerCount; i++) {
+            passengers[i].displayPassenger();
+        }
+        System.out.print("Passenger ID: ");
+        int passengerId = scanner.nextInt();
+        scanner.nextLine();
+        Passenger passenger = findPassenger(passengerId);
+        if (passenger == null) {
+            System.out.println("Passenger not found.");
+            return;
+        }
+
+        System.out.println("1. ECONOMY\n2. BUSINESS\n3. FIRST");
+        System.out.print("Choice: ");
+        int classChoice = scanner.nextInt();
+        scanner.nextLine();
+
+        String seatClass;
+        if (classChoice == 1) {
+            seatClass = "ECONOMY";
+        } else if (classChoice == 2) {
+            seatClass = "BUSINESS";
+        } else {
+            seatClass = "FIRST";
+        }
+
+        String seatNumber = flight.reserveNextSeat(seatClass);
+        if (seatNumber == null) {
+            System.out.println("No seats available in that class.");
+            return;
+        }
+
+        Booking booking = new Booking(bookingIdCounter++, flight, passenger, seatClass, seatNumber, "2026-07-08");
+        flight.addBooking(booking);
+        bookings[bookingCount++] = booking;
+        System.out.println("Successfully Booked! Seat Number: " + seatNumber);
+    }
+
+    // Cancel a booking
+    static void cancelBooking() {
+        viewFlightBookings();
+        System.out.print("Booking ID to cancel: ");
+        int id = scanner.nextInt();
+        scanner.nextLine();
+        Booking b = findBooking(id);
+        if (b != null) {
+            b.setStatus("CANCELLED");
+            b.getFlight().freeSeat(b.getSeatClass(), b.getSeatNumber());
+            System.out.println("Cancelled booking ID " + id);
+        }
+    }
+
+    // Check-in a passenger and update status
+    static void checkInPassenger() {
+        viewFlightBookings();
+        System.out.print("Booking ID for Check-In: ");
+        int id = scanner.nextInt();
+        scanner.nextLine();
+        Booking b = findBooking(id);
+        if (b != null) {
+            b.setStatus("CHECKED_IN");
+            System.out.println("Checked in booking ID " + id);
+        }
+    }
+
+    // Shows all the bookings in a specific flight
+    static void viewFlightBookings() {
+        viewAllFlights();
+        System.out.print("Flight ID: ");
+        int id = scanner.nextInt();
+        scanner.nextLine();
+        Flight f = findFlight(id);
+        if (f != null) {
+            Booking[] flightBookings = f.getBookings();
+            for (int i = 0; i < f.getBookingCount(); i++) {
+                flightBookings[i].displayBooking();
+            }
+        }
+    }
+
+    // Updates the flight status "SCHEDULED/BOARDING/DEPARTED/ARRIVED/CANCELLED"
+    static void updateFlightStatus() {
+        viewAllFlights();
+        System.out.print("Flight ID: ");
+        int id = scanner.nextInt();
+        scanner.nextLine();
+        Flight f = findFlight(id);
+        if (f != null) {
+            System.out.print("New status (SCHEDULED/BOARDING/DEPARTED/ARRIVED/CANCELLED): ");
+            String status = scanner.nextLine();
+            f.setStatus(status);
+            System.out.println("Updated flight status.");
+        }
+    }
+
+    // Helper methods to find objects
+    static Flight findFlight(int id) {
+        for (int i = 0; i < flightCount; i++) {
+            if (flights[i].getId() == id)
+                return flights[i];
+        }
+        return null;
+    }
+
+    static Passenger findPassenger(int id) {
+        for (int i = 0; i < passengerCount; i++) {
+            if (passengers[i].getId() == id)
+                return passengers[i];
+        }
+        return null;
+    }
+
+    static Booking findBooking(int id) {
+        for (int i = 0; i < bookingCount; i++) {
+            if (bookings[i].getId() == id)
+                return bookings[i];
+        }
+        return null;
+    }
 }
